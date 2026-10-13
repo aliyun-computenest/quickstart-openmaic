@@ -6,27 +6,6 @@
 
 本方案通过 Docker Compose 在一台云服务器 ECS 上部署 OpenMAIC v1.0.3，并前置 Nginx 反向代理，适合教学内容制作、课程体验和开发测试。
 
-## 前提条件
-
-部署 OpenMAIC 需要创建 ECS、VPC 和资源编排栈。使用 RAM 用户时，请确保已授予以下权限：
-
-| 权限策略名称 | 说明 |
-| --- | --- |
-| AliyunECSFullAccess | 管理云服务器 ECS |
-| AliyunVPCFullAccess | 管理专有网络 VPC |
-| AliyunROSFullAccess | 管理资源编排 ROS |
-| AliyunComputeNestUserFullAccess | 管理计算巢用户侧资源 |
-
-如需使用通义千问模型，请提前在 [阿里云百炼](https://bailian.console.aliyun.com/) 开通服务并创建 API Key。
-
-## 计费说明
-
-部署费用主要来自 ECS 实例、200 GiB ESSD 系统盘和公网流量。模型调用费用由所选模型服务商单独收取。创建服务实例时，控制台会根据地域、可用区和实例规格显示预估费用，最终费用以实际账单为准。
-
-## 部署架构
-
-计算巢通过 ROS 创建 VPC、交换机、安全组和 ECS 实例，并通过云助手在 ECS 中以 Docker Compose 运行 OpenMAIC。外部请求经 Nginx 转发到 OpenMAIC 应用，对外端口为 3000。部署时会随机生成站点访问码，作为进入课堂平台的门禁。
-
 ## 部署流程
 
 ### 1. 创建服务实例
