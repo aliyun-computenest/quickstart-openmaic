@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="计算巢是阿里云开放给企业应用服务商的服务管理平台。服务商能够在计算巢上发布私有化部署服务，为其客户提供云上软件一键部署的能力；同时也支持全托管模式的服务，赋能服务商托管其客户资源。">
+  <title>OpenMAIC 部署文档 - Aliyun 计算巢 x OpenMAIC</title>
+
+  <link rel="shortcut icon" href="../img/favicon.ico">
+
+  <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css">
+  <link rel="stylesheet" href="../css/theme.css">
+  
+
+  
+
+  
+  
+
+  
+    <script src="../search/main.js"></script>
+  
+
+  
+
+  <script src="../js/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="nav">
+      <div class="nav-inner">
+        <div class="logo">
+          <img src="./img/logo-2x.png">
+        </div>
+        <div class="nav-list">
+          <ul>
+          
+              <li><a href="#openmaic">OpenMAIC 部署文档</a></li>
+              
+                  <li><a href="#_1">概述</a></li>
+                  
+              
+                  <li><a href="#_2">部署流程</a></li>
+                  
+                      <li class="li-h3"><a href="#1">1. 创建服务实例</a></li>
+                  
+                      <li class="li-h3"><a href="#2">2. 确认订单并创建</a></li>
+                  
+                      <li class="li-h3"><a href="#3">3. 等待部署完成</a></li>
+                  
+                      <li class="li-h3"><a href="#4">4. 访问服务</a></li>
+                  
+              
+                  <li><a href="#_3">使用说明</a></li>
+                  
+              
+                  <li><a href="#_4">数据与安全</a></li>
+                  
+              
+                  <li><a href="#_5">资源释放</a></li>
+                  
+              
+                  <li><a href="#_6">官方文档</a></li>
+                  
+              
+          
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="content theme-github">
+      
+      <div class="content-inner">        
+        
+        <h1 id="openmaic">OpenMAIC 部署文档</h1>
+<h2 id="_1">概述</h2>
+<p><a href="https://github.com/THU-MAIC/OpenMAIC">OpenMAIC</a> 是清华大学开源的多智能体互动课堂平台（MIT 协议）。输入一句提示词，即可生成包含幻灯片、互动组件和沉浸模式的完整课程，支持多智能体协作授课、课堂问答、白板讲解和课程导出，可接入通义千问等主流大模型。</p>
+<p>本方案通过 Docker Compose 在一台云服务器 ECS 上部署 OpenMAIC v1.0.3，并前置 Nginx 反向代理，适合教学内容制作、课程体验和开发测试。</p>
+<h2 id="_2">部署流程</h2>
+<h3 id="1">1. 创建服务实例</h3>
+<p>访问 <a href="https://computenest.console.aliyun.com/service/instance/create/cn-hangzhou?type=user&amp;ServiceId=service-b49efe679e1746038091">OpenMAIC 部署链接</a>，按页面提示填写部署参数。</p>
+<p><img alt="创建服务实例" src="../images/create-instance.png" /></p>
+<p>主要参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>服务实例名称</td>
+<td>长度不超过 64 个字符，以英文字母开头</td>
+</tr>
+<tr>
+<td>地域、可用区</td>
+<td>ECS 部署位置，建议选择离使用者较近的地域</td>
+</tr>
+<tr>
+<td>付费类型</td>
+<td>支持按量付费和包年包月</td>
+</tr>
+<tr>
+<td>实例类型</td>
+<td>OpenMAIC 所在 ECS 的规格，可选 4 vCPU 8/16 GiB 或 8 vCPU 16 GiB</td>
+</tr>
+<tr>
+<td>实例密码</td>
+<td>ECS 登录密码，长度 8-30，需包含大写字母、小写字母、数字和特殊符号中的三项</td>
+</tr>
+<tr>
+<td>专有网络</td>
+<td>可新建专有网络，也可选择已有专有网络和交换机</td>
+</tr>
+<tr>
+<td>通义千问 API-KEY</td>
+<td>可选。填写后服务端默认使用百炼模型；留空则部署后在页面设置中填写模型服务商 Key</td>
+</tr>
+<tr>
+<td>服务端默认模型</td>
+<td>格式为 <code>provider:model</code>，默认 <code>qwen:qwen3.7-plus</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="2">2. 确认订单并创建</h3>
+<p>参数填写完成后，单击 <strong>下一步：确认订单</strong>。确认资源和费用，阅读并同意服务协议，然后单击 <strong>立即创建</strong>。</p>
+<h3 id="3">3. 等待部署完成</h3>
+<p>提交成功后进入服务实例列表。待实例状态变为 <strong>已部署</strong>，打开实例详情。实测部署约需 2 分钟。</p>
+<p><img alt="服务实例详情" src="../images/instance-detail.png" /></p>
+<h3 id="4">4. 访问服务</h3>
+<p>在实例详情页的 <strong>立即使用</strong> 区域获取 <code>openmaic_3000_url</code> 访问地址和 <code>AccessCode</code> 站点访问码。打开地址后，在 <strong>请输入访问码</strong> 对话框中输入站点访问码，即可进入 OpenMAIC 首页。</p>
+<p><img alt="OpenMAIC 页面" src="../images/service-page.png" /></p>
+<h2 id="_3">使用说明</h2>
+<ul>
+<li>部署时未填写百炼 API Key 的，先单击输入框下方的 <strong>配置模型</strong>，填写模型服务商和 API Key。</li>
+<li>在输入框中用一句话描述想学的内容，例如“用白板给我讲解傅里叶变换”，单击 <strong>进入课堂</strong> 即可生成互动课堂。</li>
+<li>开启 <strong>深度交互</strong> 后，课堂会生成更多互动组件，例如 3D 演示、仿真、小游戏、思维导图和代码练习。</li>
+<li>在 <strong>最近学习</strong> 中查看、搜索、导入课程，或新建文件夹整理课程。</li>
+</ul>
+<p>本方案未启用上游的 MP4 视频导出与服务端 PostgreSQL 持久化，课程导出会自动采用 ZIP 格式，课程数据默认保存在浏览器端。</p>
+<h2 id="_4">数据与安全</h2>
+<ul>
+<li>课堂 JSON 文档和生成的媒体文件保存在 ECS 的 <code>/opt/openmaic/data</code> 目录。删除服务实例会释放 ECS，请提前导出需要保留的课程。</li>
+<li>站点访问码是唯一的访问门禁，知道该码的人拥有相同权限，请勿外传。</li>
+<li>安全组默认对公网开放 3000 端口，且为 HTTP 访问。建议部署后将安全组来源网段收敛为办公出口网段，或自行配置 HTTPS。</li>
+<li>请妥善保管 ECS 密码、模型 API Key 和站点访问码，避免在日志或公开仓库中泄露。</li>
+</ul>
+<h2 id="_5">资源释放</h2>
+<p>不再使用时，在计算巢控制台删除服务实例，并确认关联的 ROS 栈、ECS、VPC 等资源均已释放，避免继续产生费用。</p>
+<h2 id="_6">官方文档</h2>
+<ul>
+<li><a href="https://github.com/THU-MAIC/OpenMAIC">OpenMAIC GitHub 仓库</a></li>
+<li><a href="https://bailian.console.aliyun.com/">阿里云百炼 API Key 获取</a></li>
+</ul>
+        
+      </div>
+
+      <div class="copyrights">© 2009-2022 Aliyun.com 版权所有</div>
+    </div>
+  </div>
+  
+  <!--
+  MkDocs version      : 1.6.1
+  Docs Build Date UTC : 2026-10-13 02:58:06.801770+00:00
+  -->
+</body>
+</html>
